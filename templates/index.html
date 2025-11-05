@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Smart Health Monitor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-white mb-4">
+            <i class="bi bi-speedometer2"></i> Health Dashboard
+        </h1>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-primary">
+                <i class="bi bi-clipboard-data"></i>
+            </div>
+            <div class="stat-value">{{ stats['total_records'] or 0 }}</div>
+            <div class="stat-label">Total Records</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-danger">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+            <div class="stat-value">{{ "%.0f"|format(stats['avg_heart_rate'] or 0) }}</div>
+            <div class="stat-label">Avg Heart Rate (bpm)</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-info">
+                <i class="bi bi-activity"></i>
+            </div>
+            <div class="stat-value">{{ "%.0f"|format(stats['avg_systolic'] or 0) }}/{{ "%.0f"|format(stats['avg_diastolic'] or 0) }}</div>
+            <div class="stat-label">Avg Blood Pressure</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-success">
+                <i class="bi bi-droplet-fill"></i>
+            </div>
+            <div class="stat-value">{{ "%.1f"|format(stats['avg_glucose'] or 0) }}</div>
+            <div class="stat-label">Avg Glucose (mg/dL)</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Records -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent Health Records
+            </div>
+            <div class="card-body">
+                {% if records %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-calendar3"></i> Date/Time</th>
+                                <th><i class="bi bi-heart-pulse"></i> Heart Rate</th>
+                                <th><i class="bi bi-activity"></i> Blood Pressure</th>
+                                <th><i class="bi bi-droplet-fill"></i> Glucose</th>
+                                <th><i class="bi bi-chat-left-text"></i> Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+                            <tr>
+                                <td>{{ record['timestamp'] }}</td>
+                                <td>
+                                    <span class="badge bg-danger">{{ record['heart_rate'] }} bpm</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ record['systolic_bp'] }}/{{ record['diastolic_bp'] }} mmHg</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">{{ record['glucose_level'] }} mg/dL</span>
+                                </td>
+                                <td>{{ record['notes'] or '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="/records" class="btn btn-primary">
+                        <i class="bi bi-eye"></i> View All Records
+                    </a>
+                    <a href="/visualize" class="btn btn-primary ms-2">
+                        <i class="bi bi-graph-up"></i> Visualize Data
+                    </a>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #d1d5db;"></i>
+                    <h4 class="mt-3 text-muted">No health records yet</h4>
+                    <p class="text-muted">Start tracking your health by adding your first record</p>
+                    <a href="/add" class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add Your First Record
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-plus-circle-fill" style="font-size: 3rem; color: var(--primary-color);"></i>
+                <h5 class="mt-3">Add New Record</h5>
+                <p class="text-muted">Track your latest health metrics</p>
+                <a href="/add" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Add Record
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-graph-up-arrow" style="font-size: 3rem; color: var(--secondary-color);"></i>
+                <h5 class="mt-3">View Trends</h5>
+                <p class="text-muted">Analyze your health data over time</p>
+                <a href="/visualize" class="btn btn-primary">
+                    <i class="bi bi-bar-chart"></i> View Charts
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

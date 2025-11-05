@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Visualize - Smart Health Monitor{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-white mb-4">
+            <i class="bi bi-graph-up-arrow"></i> Health Metrics Visualization
+        </h1>
+    </div>
+</div>
+
+{% if no_data %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-graph-up" style="font-size: 5rem; color: #d1d5db;"></i>
+                <h3 class="mt-4 text-muted">No Data to Visualize</h3>
+                <p class="text-muted">You need to add some health records before you can see the charts</p>
+                <a href="/add" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle"></i> Add Health Record
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            <h4 class="mb-4">
+                <i class="bi bi-bar-chart-line"></i> Health Trends Over Time
+            </h4>
+            <div id="healthChart"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <a href="/" class="btn btn-secondary">
+            <i class="bi bi-house"></i> Back to Dashboard
+        </a>
+        <a href="/records" class="btn btn-primary">
+            <i class="bi bi-table"></i> View All Records
+        </a>
+        <a href="/add" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Record
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if not no_data %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script>
+    // Parse the chart data from Flask
+    var chartData = {{ charts_json|safe }};
+    
+    // Render the chart
+    Plotly.newPlot('healthChart', chartData.data, chartData.layout, {
+        responsive: true,
+        displayModeBar: true,
+        modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+        displaylogo: false
+    });
+</script>
+{% endif %}
+{% endblock %}
+

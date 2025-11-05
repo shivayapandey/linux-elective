@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Add Record - Smart Health Monitor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-plus-circle-fill"></i> Add New Health Record
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/add" id="healthForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="heart_rate" class="form-label">
+                                <i class="bi bi-heart-pulse text-danger"></i> Heart Rate (bpm)
+                            </label>
+                            <input type="number" class="form-control" id="heart_rate" name="heart_rate" 
+                                   min="40" max="200" required placeholder="e.g., 72">
+                            <div class="form-text">Normal range: 60-100 bpm</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="glucose_level" class="form-label">
+                                <i class="bi bi-droplet-fill text-success"></i> Glucose Level (mg/dL)
+                            </label>
+                            <input type="number" class="form-control" id="glucose_level" name="glucose_level" 
+                                   min="50" max="400" step="0.1" required placeholder="e.g., 95.5">
+                            <div class="form-text">Normal fasting: 70-100 mg/dL</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="systolic_bp" class="form-label">
+                                <i class="bi bi-activity text-info"></i> Systolic Blood Pressure (mmHg)
+                            </label>
+                            <input type="number" class="form-control" id="systolic_bp" name="systolic_bp" 
+                                   min="70" max="200" required placeholder="e.g., 120">
+                            <div class="form-text">Upper number (normal: &lt;120)</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="diastolic_bp" class="form-label">
+                                <i class="bi bi-activity text-info"></i> Diastolic Blood Pressure (mmHg)
+                            </label>
+                            <input type="number" class="form-control" id="diastolic_bp" name="diastolic_bp" 
+                                   min="40" max="130" required placeholder="e.g., 80">
+                            <div class="form-text">Lower number (normal: &lt;80)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">
+                            <i class="bi bi-chat-left-text"></i> Notes (Optional)
+                        </label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Any additional notes about your health condition..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Save Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Health Tips Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-lightbulb-fill text-warning"></i> Health Tips</h5>
+                <ul class="mb-0">
+                    <li><strong>Heart Rate:</strong> Measure when resting for accurate results</li>
+                    <li><strong>Blood Pressure:</strong> Take readings at the same time each day</li>
+                    <li><strong>Glucose:</strong> Fasting glucose is best measured in the morning</li>
+                    <li><strong>Consistency:</strong> Regular monitoring helps track trends</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Form validation and user feedback
+    document.getElementById('healthForm').addEventListener('submit', function(e) {
+        const heartRate = parseInt(document.getElementById('heart_rate').value);
+        const systolic = parseInt(document.getElementById('systolic_bp').value);
+        const diastolic = parseInt(document.getElementById('diastolic_bp').value);
+        
+        // Validate blood pressure relationship
+        if (systolic <= diastolic) {
+            e.preventDefault();
+            alert('Systolic blood pressure must be higher than diastolic blood pressure.');
+            return false;
+        }
+        
+        // Warning for abnormal values
+        let warnings = [];
+        if (heartRate < 60 || heartRate > 100) {
+            warnings.push('Heart rate is outside normal range (60-100 bpm)');
+        }
+        if (systolic >= 140 || diastolic >= 90) {
+            warnings.push('Blood pressure is elevated');
+        }
+        
+        if (warnings.length > 0 && !confirm(warnings.join('\n') + '\n\nDo you want to continue?')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}
+

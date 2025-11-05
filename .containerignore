@@ -1,0 +1,24 @@
+# Containerignore file - excludes unnecessary files from container image
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.git/
+.gitignore
+README.md
+*.md
+.vscode/
+.idea/
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+venv/
+env/
+
